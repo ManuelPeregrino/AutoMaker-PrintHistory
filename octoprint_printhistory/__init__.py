@@ -283,6 +283,9 @@ class PrintHistoryPlugin(octoprint.plugin.StartupPlugin,
         self._comm = comm_instance
         return None
 
+    def is_blueprint_csrf_protected(self):
+        return True
+
 __plugin_name__ = "Print History Plugin"
 
 def __plugin_load__():

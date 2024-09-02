@@ -102,6 +102,11 @@ def eventHandler(self, event, payload):
                 printTime = self._comm.getPrintTime() if self._comm is not None else ""
                 currentFile["printTime"] = printTime
 
+            if "owner" in payload:
+                currentFile["user"] = payload["user"]
+            else:
+                currentFile["user"] = ""
+
 
             # when print happened and what was the result
             if "history" in fileData:
@@ -126,7 +131,7 @@ def eventHandler(self, event, payload):
 
             conn = sqlite3.connect(self._history_db_path)
             cur  = conn.cursor()
-            cur.execute("INSERT INTO print_history (fileName, note, filamentVolume, filamentLength, printTime, success, timestamp, parameters) VALUES (:fileName, :note, :filamentVolume, :filamentLength, :printTime, :success, :timestamp, :parameters)", currentFile)
+            cur.execute("INSERT INTO print_history (fileName, note, filamentVolume, filamentLength, printTime, success, timestamp, user, parameters) VALUES (:fileName, :note, :filamentVolume, :filamentLength, :printTime, :success, :timestamp, :user, :parameters)", currentFile)
             conn.commit()
             conn.close()
 

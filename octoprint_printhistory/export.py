@@ -138,7 +138,7 @@ def sendHistoryDataAsJson(self):
             }
             json_data.append(entry)
         
-        response = requests.post(" https://automakerapi.ngrok.app/api/upload_print_history/", json=json_data)
+        response = requests.post(" https://automakerapi.ngrok.app/upload_print_history/", json=json_data)
         return response.json()
     else:
         return {"message": "No history file"}

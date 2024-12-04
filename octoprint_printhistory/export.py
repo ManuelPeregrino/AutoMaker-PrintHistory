@@ -118,6 +118,31 @@ def exportHistoryData(self, exportType):
     else:
         return flask.make_response("No history file", 400)
 
+import requests
+import json
+
+def sendHistoryDataAsJson(self):
+    history_dict = self._getHistoryDict()
+    if history_dict is not None:
+        json_data = []
+        for historyDetails in history_dict:
+            entry = {
+                "file_name": historyDetails.get("fileName", "-"),
+                "timestamp": historyDetails.get("timestamp", "-"),
+                "success": historyDetails.get("success", "-"),
+                "print_time": historyDetails.get("printTime", "-"),
+                "spool": historyDetails.get("spool", "-"),
+                "filament_length": historyDetails.get("filamentLength", "-"),
+                "filament_volume": historyDetails.get("filamentVolume", "-"),
+                "user": historyDetails.get("user", "-")
+            }
+            json_data.append(entry)
+        
+        response = requests.post("http://automaker.local/api/upload_print_history/", json=json_data)
+        return response.json()
+    else:
+        return {"message": "No history file"}
+
 def formatPrintTime(valueInSeconds):
      if valueInSeconds is not None:
          tmp = valueInSeconds
@@ -137,3 +162,9 @@ def formatTimestamp(millis):
         return datetime.datetime.fromtimestamp(int(millis)).strftime('%Y-%m-%d %H:%M:%S')
      else:
         return '-'
+
+def getHistoryDict(self):
+    history_dict = self._getHistoryDict()
+    if history_dict:
+        self.sendHistoryDataAsJson()
+    return history_dict
